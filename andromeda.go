@@ -48,7 +48,7 @@ type (
 	}
 
 	//Структура ответа от сервера метода GetSites
-	getSitesResponse struct {
+	GetSitesResponse struct {
 		RowNumber                  int     `json:"RowNumber"`                  //Порядковый номер (присутствует только при выводе списка объектов)
 		Id                         string  `json:"Id"`                         //Идентификатор объекта
 		AccountNumber              int     `json:"AccountNumber"`              //Номер объекта (почти всегда совпадает с номером, запрограммированным в контрольную панель, установленную на объекте)
@@ -91,7 +91,7 @@ type (
 	}
 
 	//Структура ответа метода GetCustomers
-	getCustomerResponse struct {
+	GetCustomerResponse struct {
 		Id                 string `json:"Id"`                 //Идентификатор ответственного лица
 		OrderNumber        int    `json:"OrderNumber"`        //Порядковый номер ответственного в списк (уникальный на объекте, может быть не задан)
 		UserNumber         int    `json:"UserNumber"`         //Номер ответственного (номер пользователя на контрольной панели, натуральное число, уникальный на объекте, может быть не задан, нельзя очистить для пользователя MyAlarm)
@@ -183,44 +183,44 @@ func NewClient() *Client {
 }
 
 // Запрос метода GetSites
-func (c *Client) GetSites(ctx context.Context, input GetSitesInput) (getSitesResponse, error) {
+func (c *Client) GetSites(ctx context.Context, input GetSitesInput) (GetSitesResponse, error) {
 	if err := input.validate(); err != nil {
-		return getSitesResponse{}, err
+		return GetSitesResponse{}, err
 	}
 
 	req := input.generateRequest()
 	body, err := c.doHTTP(ctx, http.MethodGet, req)
 	if err != nil {
-		return getSitesResponse{}, err
+		return GetSitesResponse{}, err
 	}
 
-	var resp getSitesResponse
+	var resp GetSitesResponse
 
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
-		return getSitesResponse{}, errors.WithMessage(err, "Не удалось парсить ответ")
+		return GetSitesResponse{}, errors.WithMessage(err, "Не удалось парсить ответ")
 	}
 
 	return resp, nil
 }
 
 // Запрос метода GetCustomers
-func (c *Client) Customers(ctx context.Context, input GetCustomersInput) ([]getCustomerResponse, error) {
+func (c *Client) Customers(ctx context.Context, input GetCustomersInput) ([]GetCustomerResponse, error) {
 	if err := input.validate(); err != nil {
-		return []getCustomerResponse{}, err
+		return []GetCustomerResponse{}, err
 	}
 
 	req := input.generateRequest()
 	body, err := c.doHTTP(ctx, http.MethodGet, req)
 	if err != nil {
-		return []getCustomerResponse{}, err
+		return []GetCustomerResponse{}, err
 	}
 
-	resp := []getCustomerResponse{}
+	resp := []GetCustomerResponse{}
 
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
-		return []getCustomerResponse{}, errors.WithMessage(err, "Не удалось парсить ответ")
+		return []GetCustomerResponse{}, errors.WithMessage(err, "Не удалось парсить ответ")
 	}
 
 	return resp, nil
