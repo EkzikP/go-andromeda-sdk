@@ -276,5 +276,3 @@ func (c *Client) doHTTP(ctx context.Context, method string, r request) ([]byte, 
 
 	return buf.Bytes(), nil
 }
-
-// Ошибка 400
